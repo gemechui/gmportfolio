@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Gemechu Iticha Mosisa | Finance &amp; Investment Professional">
 <meta property="og:description" content="Credit, risk and MSME finance professional based in Addis Ababa, Ethiopia.">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -263,6 +263,12 @@ footer{background:#0b1b2b;color:#aebdca;padding:28px 0;font-size:12.5px}
   *,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important}
   .reveal{opacity:1;transform:none}
 }
+
+.install{position:fixed;left:18px;bottom:18px;z-index:60;display:none;align-items:center;gap:8px;background:#17243A;color:#fff;border:1.5px solid #A8E6CF;border-radius:999px;padding:12px 18px;font:700 14px/1 "Segoe UI",system-ui,sans-serif;cursor:pointer;box-shadow:0 14px 34px rgba(16,36,58,.3)}
+.install.show{display:inline-flex}
+.ios-tip{position:fixed;left:14px;right:14px;bottom:14px;z-index:70;display:none;background:#fff;color:#17243A;border:1px solid #BFD9CD;border-radius:16px;padding:16px 44px 16px 16px;font:500 14px/1.5 "Segoe UI",system-ui,sans-serif;box-shadow:0 18px 48px rgba(16,36,58,.25)}
+.ios-tip.show{display:block}
+.ios-tip button{position:absolute;right:8px;top:8px;border:0;background:none;font-size:22px;cursor:pointer;color:#17243A}
 </style>
 </head>
 <body>
@@ -595,6 +601,21 @@ footer{background:#0b1b2b;color:#aebdca;padding:28px 0;font-size:12.5px}
 if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0){
   window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
 }
+</script>
+<button class="install" id="installBtn" type="button">&#11015; Install app</button>
+<div class="ios-tip" id="iosTip" role="dialog" aria-label="Install instructions"><button type="button" id="iosClose" aria-label="Close">&times;</button>To install: tap the <b>Share</b> button in Safari, then <b>Add to Home Screen</b>.</div>
+<script>
+(function(){
+  var btn=document.getElementById("installBtn"), tip=document.getElementById("iosTip"), dp=null;
+  var standalone=window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone;
+  if(standalone||location.protocol.indexOf("http")!==0) return;
+  window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();dp=e;btn.classList.add("show");});
+  btn.addEventListener("click",function(){ if(!dp) return; dp.prompt(); dp.userChoice.then(function(){dp=null;btn.classList.remove("show");}); });
+  window.addEventListener("appinstalled",function(){btn.classList.remove("show");});
+  var ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  if(ios){ btn.classList.add("show"); btn.addEventListener("click",function(){tip.classList.add("show");}); }
+  document.getElementById("iosClose").addEventListener("click",function(){tip.classList.remove("show");});
+})();
 </script>
 </body>
 </html>
